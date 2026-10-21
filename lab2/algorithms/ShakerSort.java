@@ -11,36 +11,37 @@ public class ShakerSort<T extends Comparable<T>> implements Sorter<T> {
 
         int left = 0;
         int right = array.length - 1;
-        boolean swapped = true;
 
-        while (left < right && swapped) {
-            swapped = false;
+        while (left < right) {
+            int lastSwap = left;
 
+            // Проход слева направо
             for (int i = left; i < right; i++) {
                 comparisons++;
                 if (array[i].compareTo(array[i + 1]) > 0) {
                     swap(array, i, i + 1);
                     swaps++;
-                    swapped = true;
+                    lastSwap = i; // Запоминаем позицию последнего обмена
                 }
             }
-            right--;
+            right = lastSwap; // Сразу сдвигаем правую границу до последнего обмена
 
-            if (!swapped) {
+            if (left >= right) {
                 break;
             }
 
-            swapped = false;
+            lastSwap = right;
 
+            // Проход справа налево
             for (int i = right; i > left; i--) {
                 comparisons++;
-                if (array[i].compareTo(array[i - 1]) < 0) {
-                    swap(array, i, i - 1);
+                if (array[i - 1].compareTo(array[i]) > 0) {
+                    swap(array, i - 1, i);
                     swaps++;
-                    swapped = true;
+                    lastSwap = i; // Запоминаем позицию последнего обмена
                 }
             }
-            left++;
+            left = lastSwap; // Сразу сдвигаем левую границу
         }
 
         return new SortResult(comparisons, swaps);

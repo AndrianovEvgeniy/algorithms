@@ -22,17 +22,40 @@ public class DualPivotQuickSort<T extends Comparable<T>> implements Sorter<T> {
             return;
         }
 
-        if (high - low < 3) {
-            manualSortSmall(array, low, high);
+        // Для 2 элементов — всего 1 сравнение
+        if (high - low == 1) {
+            comparisons++;
+            if (array[low].compareTo(array[high]) > 0) {
+                swap(array, low, high);
+                swaps++;
+            }
             return;
         }
 
-        int pivotIndex1 = low + 1;
-        int pivotIndex2 = high - 1;
+        // Для 3 элементов — максимум 2-3 сравнения
+        if (high - low == 2) {
+            comparisons++;
+            if (array[low].compareTo(array[low + 1]) > 0) {
+                swap(array, low, low + 1);
+                swaps++;
+            }
+            comparisons++;
+            if (array[low + 1].compareTo(array[high]) > 0) {
+                swap(array, low + 1, high);
+                swaps++;
+                comparisons++;
+                if (array[low].compareTo(array[low + 1]) > 0) {
+                    swap(array, low, low + 1);
+                    swaps++;
+                }
+            }
+            return;
+        }
 
-        swap(array, low, pivotIndex1);
+        // Сепараторы в некрайних позициях: low + 1 и high - 1
+        swap(array, low, low + 1);
         swaps++;
-        swap(array, high, pivotIndex2);
+        swap(array, high, high - 1);
         swaps++;
 
         comparisons++;
@@ -55,29 +78,12 @@ public class DualPivotQuickSort<T extends Comparable<T>> implements Sorter<T> {
                 swaps++;
                 lt++;
                 k++;
-            }
-            else {
+            } else {
                 comparisons++;
                 if (array[k].compareTo(pivot2) > 0) {
-                    while (k < gt) {
-                        comparisons++;
-                        if (array[gt].compareTo(pivot2) > 0) {
-                            gt--;
-                        } else {
-                            break;
-                        }
-                    }
                     swap(array, k, gt);
                     swaps++;
                     gt--;
-
-                    comparisons++;
-                    if (array[k].compareTo(pivot1) < 0) {
-                        swap(array, k, lt);
-                        swaps++;
-                        lt++;
-                    }
-                    k++;
                 } else {
                     k++;
                 }
@@ -91,25 +97,9 @@ public class DualPivotQuickSort<T extends Comparable<T>> implements Sorter<T> {
         swap(array, high, gt);
         swaps++;
 
-        quickSort(array, low, lt - 1);       // Левый подмассив (< P1)
-        quickSort(array, lt + 1, gt - 1);   // Центральный подмассив (P1 <= x <= P2)
-        quickSort(array, gt + 1, high);     // Правый подмассив (> P2)
-    }
-
-    private void manualSortSmall(T[] array, int low, int high) {
-        for (int i = low + 1; i <= high; i++) {
-            int j = i;
-            while (j > low) {
-                comparisons++;
-                if (array[j - 1].compareTo(array[j]) > 0) {
-                    swap(array, j - 1, j);
-                    swaps++;
-                    j--;
-                } else {
-                    break;
-                }
-            }
-        }
+        quickSort(array, low, lt - 1);
+        quickSort(array, lt + 1, gt - 1);
+        quickSort(array, gt + 1, high);
     }
 
     private void swap(T[] array, int i, int j) {

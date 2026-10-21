@@ -10,27 +10,23 @@ public class InsertionSort<T extends Comparable<T>> implements Sorter<T> {
         long swaps = 0;
 
         for (int i = 1; i < array.length; i++) {
-            int j = i;
+            T key = array[i];
+            int j = i - 1;
 
-            while (j > 0) {
+            while (j >= 0) {
                 comparisons++;
-                if (array[j - 1].compareTo(array[j]) > 0) {
-                    swap(array, j - 1, j);
+                if (array[j].compareTo(key) > 0) {
+                    array[j + 1] = array[j]; // Сдвиг элемента вправо
                     swaps++;
                     j--;
                 } else {
                     break;
                 }
             }
+            array[j + 1] = key;
         }
 
         return new SortResult(comparisons, swaps);
-    }
-
-    private void swap(T[] array, int i, int j) {
-        T temp = array[i];
-        array[i] = array[j];
-        array[j] = temp;
     }
 
     @Override
