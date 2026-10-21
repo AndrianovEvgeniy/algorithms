@@ -1,1 +1,1 @@
-# algorithms
+# Repository for algorithms labs
